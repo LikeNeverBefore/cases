@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprawdź cenę Skrzyni Odrzutu na Steam</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        input,
+        button {
+            padding: 10px;
+            margin: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .price {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Sprawdź cenę Skrzyni Odrzutu na Steam</h1>
+        <input type="text" id="itemID" placeholder="Wpisz ID przedmiotu">
+        <button onclick="checkPrice()">Sprawdź cenę</button>
+        <div id="price" class="price"></div>
+    </div>
+
+    <script>
+        async function checkPrice() {
+            const itemID = document.getElementById("itemID").value;
+            if (!itemID) {
+                alert("Proszę podać ID przedmiotu!");
+                return;
+            }
+
+            const apiKey = 'YOUR_STEAM_API_KEY'; // Wstaw tutaj swój klucz API
+            const url = `https://api.steampowered.com/ISteamEconomy/GetAssetPrices/v1/?key=${apiKey}&currency=PLN&appid=730&market_hash_name=${itemID}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.result && data.result.assets) {
+                    const price = data.result.assets[0].prices[0].lowest_price;
+                    document.getElementById("price").innerText = `Aktualna cena: ${price} PLN`;
+                } else {
+                    document.getElementById("price").innerText = "Nie znaleziono przedmiotu.";
+                }
+            } catch (error) {
+                console.error('Błąd:', error);
+                document.getElementById("price").innerText = "Błąd przy pobieraniu danych.";
+            }
+        }
+    </script>
+
+</body>
+
+</html>
