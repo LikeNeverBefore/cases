@@ -137,10 +137,10 @@
         <table>
           <thead>
             <tr>
-                <th onclick="sortTable(${index}, 'name')">Case Name</th>
-                <th onclick="sortTable(${index}, 'quantity')">Quantity</th>
-                <th onclick="sortTable(${index}, 'price')">Unit Price</th>
-                <th>Total Value</th>
+                 <th onclick="sortTable(${index},'name')">Case Name</th>
+                 <th onclick="sortTable(${index},'quantity')">Quantity</th>
+                 <th onclick="sortTable(${index},'price')">Unit Price</th>
+                 <th onclick="sortTable(${index},'value')">Total Value</th> 
             </tr>
           </thead>
           <tbody id="price-list-${index}">
@@ -283,34 +283,24 @@
 
         updateExportInfo();
 
-        function sortTable(invIndex, key) {
-            const tbody = document.getElementById(`price-list-${invIndex}`);
-            const data = inventories[invIndex].caseData;
+        function sortTable(invIndex,key){
+            const tbody=document.getElementById(`price-list-${invIndex}`);
+            const data=inventories[invIndex].caseData;
+            let asc=inventories[invIndex]._lastSort!==key;
+            inventories[invIndex]._lastSort=asc?key:null;
         
-            let asc = inventories[invIndex]._lastSort !== key;
-            inventories[invIndex]._lastSort = asc ? key : null;
-        
-            data.sort((a, b) => {
-                let va = a[key] === null ? 0 : isNaN(a[key]) ? a[key] : parseFloat(a[key]);
-                let vb = b[key] === null ? 0 : isNaN(b[key]) ? b[key] : parseFloat(b[key]);
-        
-                if (va < vb) return asc ? -1 : 1;
-                if (va > vb) return asc ? 1 : -1;
+            data.sort((a,b)=>{
+                let va=a[key]===null?0:isNaN(a[key])?a[key]:parseFloat(a[key]);
+                let vb=b[key]===null?0:isNaN(b[key])?b[key]:parseFloat(b[key]);
+                if(va<vb) return asc?-1:1;
+                if(va>vb) return asc?1:-1;
                 return 0;
             });
         
-            tbody.innerHTML = "";
-            data.forEach(entry => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>
-                      <img src="images/${entry.name}.png" style="width:48px;height:48px;margin-right:8px;vertical-align:middle;" onerror="this.style.display='none';">
-                      ${entry.name}
-                    </td>
-                    <td>${entry.quantity}</td>
-                    <td>${entry.price ? entry.price + ' zł' : 'N/A'}</td>
-                    <td>${entry.value ? entry.value + ' zł' : 'N/A'}</td>
-                `;
+            tbody.innerHTML="";
+            data.forEach(entry=>{
+                const row=document.createElement('tr');
+                row.innerHTML=`<td>${entry.name}</td><td>${entry.quantity}</td><td>${entry.price?entry.price+' zł':'N/A'}</td><td>${entry.value?entry.value+' zł':'N/A'}</td>`;
                 tbody.appendChild(row);
             });
         }
@@ -319,6 +309,7 @@
 </body>
 
 </html>
+
 
 
 
